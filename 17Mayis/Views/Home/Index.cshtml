@@ -1,0 +1,50 @@
+﻿@model IEnumerable<_17Mayis.Models.iller>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<select class="form-group" id="iller">
+    @foreach (var item in Model)
+    {
+        <option value="@item.id">@item.sehir</option>
+    }
+</select>
+
+<br />
+
+<select class="form-group" id="ilceler">
+    <option>test</option>
+        <option>deneme</option>
+</select>
+
+<script type="text/javascript">
+    $('#iller').on('change', function () { //iller dropdownu seçilip change olduğunda
+
+        //$.ilid = $(this).val() //bu değiştirilen değerin value'sunu al. Bu benim illerimin ID'si olsun
+        $('#ilceler').empty(); //Eğer il seçildiyse ilçeler dropdown'u boş kalsın
+        var ilid = $(this).val();
+
+
+        $.ajax({
+            url: "/Home/ilceleriGetir",
+            type: "POST",
+            data: { "ilid": ilid }, //url bilgisi ilceleriGetir olan ve POST eden, bu işlemi yaparken de illerin id bilgisini getiren yapıdır. illerin Id bilgisi az önce yukarıda tanımlanan "ilid" değişkenidir.
+            dataType: "json",
+            success: function (data) //bu fonksiyon başarılı olduğu zaman çalışacak olan fonksiyona gelen değer seçilen ile göre ilçelerin bilgisini getirir
+            { 
+                var ilceler = $("#ilceler");
+                ilceler.empty();
+                $.each(data, function (Id, option) { //bu dataların üzerinde bir id ve bir option olarak işlem yapacak
+
+                    ilceler.append($('<option></option>').val(option.Id).html(option.Ad))
+                    
+                })
+            },
+            error: function (jqXHR,textStatus,errorThrown) { alert('Hata Oluştu')}
+        });
+
+    });
+
+</script>
